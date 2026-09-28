@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.DS_Store
+
+# גרסת השרת הראשונה – נשארת מקומית, לא חלק מהפרויקט הציבורי
+server.js
+public/
+data/
+package-lock.json

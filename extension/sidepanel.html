@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>רשימות תפוצה</title>
+<style>
+  :root {
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --border: #dde2e7;
+    --text: #1f2933;
+    --muted: #6b7785;
+    --primary: #128c7e;
+    --primary-hover: #0e6f64;
+    --ok-bg: #e8f5f3;
+    --warn-bg: #fff4e5;
+    --warn-text: #7a4b00;
+    --error: #b42318;
+    --error-bg: #fdecea;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0;
+    font: 14px/1.45 -apple-system, "Segoe UI", Arial, "Noto Sans Hebrew", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+  }
+  header {
+    background: var(--primary); color: #fff; padding: 10px 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  header h1 { margin: 0; font-size: 1.05rem; flex: 1; }
+  header button { background: transparent; color: #fff; border-color: rgba(255,255,255,.5); }
+  header button:hover { background: rgba(255,255,255,.15); }
+  main { padding: 12px; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  .card h2 { margin: 0; font-size: .95rem; }
+  .row-between {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 8px; margin-bottom: 8px;
+  }
+  input[type="text"], input[type="search"], textarea {
+    width: 100%; padding: 7px 10px;
+    border: 1px solid var(--border); border-radius: 6px;
+    font: inherit;
+  }
+  textarea { min-height: 110px; resize: vertical; }
+  input:focus, textarea:focus { outline: 2px solid var(--primary); outline-offset: -1px; }
+  label.field { display: block; font-weight: 600; margin-bottom: 4px; }
+  button {
+    font: inherit; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+    border: 1px solid var(--border); background: var(--card); color: var(--text);
+  }
+  button:hover { background: #f0f2f4; }
+  button.primary { background: var(--primary); border-color: var(--primary); color: #fff; }
+  button.primary:hover { background: var(--primary-hover); }
+  .row-between button { white-space: nowrap; flex: none; }
+  button.danger { color: var(--error); }
+  button.link { border: 0; background: none; color: var(--primary); padding: 0; }
+  button:disabled { opacity: .5; cursor: default; }
+  .actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+  .pill {
+    font-weight: 600; font-size: .75rem; padding: 2px 8px; border-radius: 999px;
+    background: var(--ok-bg); color: var(--primary); white-space: nowrap;
+  }
+  .pill.warn { background: var(--warn-bg); color: var(--warn-text); }
+  .pill.error { background: var(--error-bg); color: var(--error); }
+  .pill.muted { background: #eef0f2; color: var(--muted); }
+  .msg { font-size: .82rem; min-height: 1.2em; margin-top: 6px; color: var(--warn-text); white-space: pre-line; }
+  .msg.error { color: var(--error); }
+  .msg.ok { color: var(--primary); }
+  .muted { color: var(--muted); font-size: .82rem; }
+
+  /* רשימות בדף הבית */
+  .lists { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .lists button {
+    width: 100%; text-align: right; display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 12px;
+  }
+  .lists .name { font-weight: 600; }
+
+  /* בחירת אנשי קשר */
+  .contacts {
+    list-style: none; margin: 8px 0 0; padding: 0;
+    max-height: 45vh; overflow: auto;
+    border: 1px solid var(--border); border-radius: 6px;
+  }
+  .contacts label {
+    display: flex; align-items: center; gap: 8px;
+    padding: 6px 10px; border-bottom: 1px solid #eef0f2; cursor: pointer;
+  }
+  .contacts li:last-child label { border-bottom: 0; }
+  .contacts li.sep {
+    position: sticky; top: 0; z-index: 1;
+    padding: 5px 10px; font-size: .78rem; font-weight: 600; color: var(--muted);
+    background: #eef0f2; border-bottom: 1px solid var(--border);
+  }
+  .contacts label:hover { background: #f9fafb; }
+  .contacts input:checked + span { font-weight: 600; color: var(--primary); }
+
+  /* חברי רשימה בשליחה */
+  .members { list-style: none; margin: 0; padding: 0; max-height: 40vh; overflow: auto; }
+  .members li {
+    display: flex; justify-content: space-between; align-items: center; gap: 6px;
+    padding: 6px 0; border-bottom: 1px solid #eef0f2;
+  }
+  .members li:last-child { border-bottom: 0; }
+  /* קבצים מצורפים */
+  .attach-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+  .attach-list li {
+    position: relative; width: 72px; height: 72px; border-radius: 8px; overflow: hidden;
+    background: #eef0f2; border: 1px solid var(--border);
+  }
+  .attach-list img, .attach-list video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .attach-list .kind {
+    position: absolute; bottom: 3px; right: 3px; font-size: .65rem; font-weight: 600;
+    background: rgba(0,0,0,.6); color: #fff; padding: 0 5px; border-radius: 4px;
+  }
+  .attach-list .remove {
+    position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; padding: 0; line-height: 18px;
+    border-radius: 50%; border: 0; background: rgba(0,0,0,.6); color: #fff; font-size: 13px;
+  }
+  .attach-list .remove:hover { background: rgba(0,0,0,.8); }
+  .warning {
+    background: var(--warn-bg); color: var(--warn-text);
+    border-radius: 6px; padding: 8px 10px; font-size: .8rem; margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1 id="title">רשימות תפוצה</h1>
+</header>
+
+<main>
+  <!-- ================= דף הבית ================= -->
+  <div id="viewHome">
+    <section class="card">
+      <div class="row-between">
+        <h2>הרשימות שלי</h2>
+        <button type="button" class="primary" id="newList">+ רשימה חדשה</button>
+      </div>
+      <ul id="lists" class="lists"></ul>
+      <div id="listsEmpty" class="muted">אין עדיין רשימות. לחץ "רשימה חדשה" כדי ליצור אחת.</div>
+    </section>
+
+    <section class="card">
+      <div class="row-between">
+        <h2>אנשי קשר וקבוצות</h2>
+        <button type="button" id="scanHome">סרוק מ-WhatsApp</button>
+      </div>
+      <div id="contactsInfoHome" class="muted"></div>
+      <div id="scanMsgHome" class="msg" aria-live="polite"></div>
+    </section>
+
+    <section class="card">
+      <div class="row-between"><h2>גיבוי והעברה</h2></div>
+      <p class="muted" style="margin: 0;">שמירת הרשימות, אנשי הקשר והקבוצות לקובץ, וטעינה שלהם בחזרה – למשל במחשב אחר או אחרי התקנה מחדש.</p>
+      <div class="actions">
+        <button type="button" id="exportData">ייצוא לקובץ</button>
+        <button type="button" id="importData">ייבוא מקובץ</button>
+        <input type="file" id="importFile" accept=".json,application/json" hidden>
+      </div>
+      <div id="backupMsg" class="msg" aria-live="polite"></div>
+    </section>
+  </div>
+
+  <!-- ================= עריכת רשימה ================= -->
+  <div id="viewEdit" hidden>
+    <section class="card">
+      <label class="field" for="listName">שם הרשימה</label>
+      <input type="text" id="listName" placeholder="למשל: מתנדבים – צפון">
+    </section>
+
+    <section class="card">
+      <div class="row-between">
+        <h2>חברי הרשימה</h2>
+        <span id="editCount" class="pill">0 נבחרו</span>
+      </div>
+      <div class="row-between">
+        <span id="contactsInfoEdit" class="muted"></span>
+        <button type="button" id="scanEdit">סרוק מ-WhatsApp</button>
+      </div>
+      <div id="scanMsgEdit" class="msg" aria-live="polite"></div>
+      <input type="search" id="contactFilter" placeholder="חיפוש איש קשר או קבוצה...">
+      <div class="actions">
+        <button type="button" class="link" id="selectVisible">סמן את כל המוצגים</button>
+        <span class="muted">·</span>
+        <button type="button" class="link" id="clearMembers">נקה הכל</button>
+        <span class="muted">·</span>
+        <label class="muted"><input type="checkbox" id="onlySelected"> רק מסומנים</label>
+      </div>
+      <ul id="contacts" class="contacts"></ul>
+    </section>
+
+    <div id="editMsg" class="msg error" aria-live="polite"></div>
+    <div class="actions">
+      <button type="button" class="primary" id="saveList">שמור רשימה</button>
+      <button type="button" id="cancelEdit">ביטול</button>
+      <button type="button" class="danger" id="deleteList">מחק רשימה</button>
+    </div>
+  </div>
+
+  <!-- ================= שליחה לרשימה ================= -->
+  <div id="viewSend" hidden>
+    <div class="actions" style="margin: 0 0 10px;">
+      <button type="button" id="backHome">→ כל הרשימות</button>
+      <button type="button" id="editList">ערוך רשימה</button>
+    </div>
+
+    <section class="card">
+      <label class="field" for="sendMessage">הודעה</label>
+      <textarea id="sendMessage" placeholder="כתוב כאן את ההודעה..."></textarea>
+
+      <div class="row-between" style="margin: 12px 0 6px;">
+        <label class="field" style="margin: 0;">תמונות וסרטונים</label>
+        <button type="button" id="addFiles">+ הוספה</button>
+      </div>
+      <input type="file" id="fileInput" accept="image/*,video/*" multiple hidden>
+      <ul id="attachList" class="attach-list"></ul>
+      <div id="attachMsg" class="msg" aria-live="polite"></div>
+    </section>
+
+    <section class="card">
+      <div class="row-between">
+        <h2>נמענים</h2>
+        <span id="sendProgress" class="pill warn"></span>
+      </div>
+      <ul id="members" class="members"></ul>
+      <div id="sendMsg" class="msg" aria-live="polite"></div>
+      <div class="actions">
+        <button type="button" class="primary" id="sendAll">שלח</button>
+        <button type="button" class="danger" id="stopSend" hidden>עצור</button>
+        <button type="button" id="resetStatus">אפס סטטוסים</button>
+      </div>
+      <div class="warning" id="modeText"></div>
+    </section>
+  </div>
+</main>
+
+<script src="sidepanel.js"></script>
+</body>
+</html>

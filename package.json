@@ -1,0 +1,15 @@
+{
+  "name": "wa-broadcast-lists",
+  "version": "1.2.2",
+  "private": true,
+  "description": "Chrome extension: broadcast lists for WhatsApp Web – contacts and groups, text, images and videos. The user always clicks Send.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hsbwnmwbgrnysywnwhtsqwt-lang/wa-broadcast-lists.git"
+  },
+  "homepage": "https://www.tools-mishmish.com/wa-broadcast-lists.html",
+  "scripts": {
+    "package": "sh packaging/package.sh"
+  }
+}
